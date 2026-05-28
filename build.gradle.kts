@@ -6,6 +6,8 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
+val springVersion = "7.0.7"
+
 repositories {
     mavenCentral()
 }
@@ -15,20 +17,24 @@ java {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
-
 dependencies {
-    implementation("org.springframework:spring-webmvc:6.1.14")
-    implementation("org.springframework:spring-context:6.1.14")
-    implementation("org.springframework.data:spring-data-jdbc:4.0.5")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    implementation("org.springframework:spring-webmvc:$springVersion")
+    implementation("org.springframework:spring-context:$springVersion")
+    implementation("org.springframework:spring-jdbc:$springVersion")
 
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("org.postgresql:postgresql:42.7.4")
+    implementation("org.projectlombok:lombok:1.18.46")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
 
-    compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
+    compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.war {
+    archiveFileName.set("blog-backend.war")
 }
 
 tasks.test {
