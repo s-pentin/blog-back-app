@@ -33,8 +33,93 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+}
+
 tasks.war {
-    archiveFileName.set("blog-backend.war")
+    archiveBaseName.set("ROOT")
+    archiveVersion.set("")
+}
+
+val tomcatHome: String = project.findProperty("tomcat.home") as String?
+    ?: System.getenv("TOMCAT_HOME")
+    ?: error("Set tomcat.home in gradle.properties or TOMCAT_HOME environment variable")
+
+tasks.register("deploy") {
+    dependsOn("war")
+    group = "deployment"
+    description = "Build WAR and copy to Tomcat webapps"
+    doLast {
+        val warFile = layout.buildDirectory.file("libs/ROOT.war").get().asFile
+        val webapps = file("${tomcatHome}/webapps")
+        if (!webapps.exists()) {
+            error("Tomcat webapps directory not found: ${webapps.absolutePath}")
+        }
+        copy {
+            from(warFile)
+            into(webapps)
+        }
+        println("Deployed ${warFile.name} to ${webapps.absolutePath}")
+    }
+}
+
+tasks.register("undeploy") {
+    group = "deployment"
+    description = "Remove WAR and extracted app from Tomcat webapps"
+    doLast {
+        val webapps = file("${tomcatHome}/webapps")
+        delete(file("${webapps}/blog-backend.war"))
+        delete(file("${webapps}/blog-backend"))
+        println("Undeployed blog-backend from ${webapps.absolutePath}")
+    }
+}
+
+val isWindows = System.getProperty("os.name").lowercase().contains("win")
+val scriptExt = if (isWindows) ".bat" else ".sh"
+
+tasks.register<Exec>("tomcatStop") {
+    group = "tomcat"
+    description = "Stop Tomcat server"
+
+    workingDir("$tomcatHome/bin")
+    commandLine("./catalina$scriptExt", "stop")
+
+    doLast {
+        println("⛔ Tomcat is stopping...")
+        Thread.sleep(1500)   // небольшая пауза после остановки
+    }
+}
+
+tasks.register<Exec>("tomcatStart") {
+    group = "tomcat"
+    description = "Start Tomcat server"
+
+    workingDir("$tomcatHome/bin")
+    commandLine("./catalina$scriptExt", "start")
+
+    doLast {
+        println("✅ Tomcat is starting...")
+        Thread.sleep(3500)   // Tomcat 11 запускается дольше
+        println("✅ Tomcat should be ready")
+    }
+}
+
+tasks.register("restart") {
+    group = "deployment"
+    description = "Полный цикл: остановить → удалить → задеплоить → запустить"
+    dependsOn("tomcatStop", "undeploy", "deploy", "tomcatStart")}
+
+tasks.named("undeploy") {
+    mustRunAfter("tomcatStop")
+}
+
+tasks.named("deploy") {
+    mustRunAfter("undeploy")
+}
+
+tasks.named("tomcatStart") {
+    mustRunAfter("deploy")
 }
 
 tasks.test {
