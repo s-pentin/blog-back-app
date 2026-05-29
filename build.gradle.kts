@@ -29,8 +29,16 @@ dependencies {
 
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
+    testImplementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
+
     testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework:spring-test:$springVersion")
+    testImplementation("org.mockito:mockito-core:5.14.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 }
 
 tasks.withType<JavaCompile> {
