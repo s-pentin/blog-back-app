@@ -15,7 +15,7 @@
 | `./gradlew undeploy` | Удалить приложение из Tomcat |
 | `./gradlew tomcatStart` | Запустить Tomcat |
 | `./gradlew tomcatStop` | Остановить Tomcat |
-| `./gradlew restart` | Полный цикл: остановить, задеплоить, запустить |
+| `./gradlew restart` | Полный цикл: тесты, остановить, задеплоить, запустить |
 
 ## Конфигурация Tomcat
 

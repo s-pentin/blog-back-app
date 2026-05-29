@@ -6,7 +6,7 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
-val springVersion = "7.0.7"
+val springVersion = "6.2.1"
 
 repositories {
     mavenCentral()
@@ -29,9 +29,13 @@ dependencies {
 
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
+    testImplementation("org.testcontainers:testcontainers:1.20.4")
+    testImplementation("org.testcontainers:postgresql:1.20.4")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.4")
+
     testImplementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
-    testImplementation(platform("org.junit:junit-bom:5.11.0"))
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.springframework:spring-test:$springVersion")
@@ -115,8 +119,8 @@ tasks.register<Exec>("tomcatStart") {
 
 tasks.register("restart") {
     group = "deployment"
-    description = "Полный цикл: остановить → удалить → задеплоить → запустить"
-    dependsOn("tomcatStop", "undeploy", "deploy", "tomcatStart")}
+    description = "Полный цикл: тесты → остановить → удалить → задеплоить → запустить"
+    dependsOn("test", "tomcatStop", "undeploy", "deploy", "tomcatStart")}
 
 tasks.named("undeploy") {
     mustRunAfter("tomcatStop")
