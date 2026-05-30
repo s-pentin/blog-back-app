@@ -44,7 +44,11 @@ public class CommentController {
     public ResponseEntity<Comment> getCommentByPostIdAndCommentId(
             @PathVariable Long postId,
             @PathVariable Long commentId) {
-        return ResponseEntity.ok(commentService.getByPostIdAndCommentId(postId, commentId));
+        try {
+            return ResponseEntity.ok(commentService.getByPostIdAndCommentId(postId, commentId));
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/api/posts/{postId}/comments")
@@ -59,7 +63,9 @@ public class CommentController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody CommentRequest commentRequest) {
-        commentService.update(postId, commentRequest.text(), commentId);
+        if (!commentService.update(postId, commentRequest.text(), commentId)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(commentService.getByPostIdAndCommentId(postId, commentId));
     }
 

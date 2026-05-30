@@ -57,7 +57,7 @@ class PostControllerTest {
                 null, new Timestamp(System.currentTimeMillis()));
         when(postService.getById(1L)).thenReturn(post);
 
-        mockMvc.perform(get("/api/posts/1"))
+        mockMvc.perform(post("/api/posts/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Title"));

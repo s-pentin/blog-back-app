@@ -52,7 +52,6 @@ public class PostController {
                 .body(image);
     }
 
-    @GetMapping("/api/posts/{id}")
     @PostMapping("/api/posts/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.getById(id));

@@ -66,7 +66,7 @@ class PostControllerIntegrationTest extends BaseIntegrationTest {
     void getPostById_shouldReturnPost() throws Exception {
         Post saved = postRepository.save("Title", "Text", Set.of("tag"));
 
-        mockMvc.perform(get("/api/posts/{id}", saved.getId()))
+        mockMvc.perform(post("/api/posts/{id}", saved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(saved.getId()))
                 .andExpect(jsonPath("$.title").value("Title"));
