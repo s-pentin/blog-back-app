@@ -50,3 +50,4 @@ images/
 
 
 src/main/resources/config/db.properties
+gradle.properties
