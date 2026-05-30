@@ -1,5 +1,6 @@
 package org.blog.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "org.blog.controllers",
         "org.blog.config"
 })
-public class WebConfig implements WebMvcConfigurer {
+public class TestWebConfig implements WebMvcConfigurer {
 
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Override

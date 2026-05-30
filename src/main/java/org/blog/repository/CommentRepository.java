@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,13 +20,15 @@ public class CommentRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(String text, Long postId) {
-        return jdbcTemplate.queryForObject(
-                "INSERT INTO comments (text, post_id) VALUES (?, ?) RETURNING id",
-                Long.class,
-                text,
-                postId
-        );
+    public Comment save(String text, Long postId) {
+        return jdbcTemplate.execute((Connection con) -> {
+            var ps = con.prepareStatement("INSERT INTO comments (text, post_id) VALUES (?, ?) RETURNING *");
+            ps.setString(1, text);
+            ps.setLong(2, postId);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return mapRow(rs, 0);
+        });
     }
 
     public int update(Long postId, String text, Long commentId) {
@@ -39,7 +42,7 @@ public class CommentRepository {
 
     public List<Comment> getCommentsByPostId(Long postId) {
         return jdbcTemplate.query(
-                "SELECT id, text, post_id FROM comments WHERE post_id = ?",
+                "SELECT id, text, post_id, created_at FROM comments WHERE post_id = ?",
                 this::mapRow,
                 postId
         );
@@ -47,7 +50,7 @@ public class CommentRepository {
 
     public Comment getCommentByPostIdAndCommentId(Long postId, Long commentId) {
         return jdbcTemplate.queryForObject(
-                "SELECT id, text, post_id FROM comments WHERE post_id = ? AND id = ?",
+                "SELECT id, text, post_id, created_at FROM comments WHERE post_id = ? AND id = ?",
                 this::mapRow,
                 postId,
                 commentId
@@ -59,6 +62,7 @@ public class CommentRepository {
         comment.setId(rs.getLong("id"));
         comment.setText(rs.getString("text"));
         comment.setPostId(rs.getLong("post_id"));
+        comment.setCreateAt(rs.getTimestamp("created_at"));
         return comment;
     }
 }
