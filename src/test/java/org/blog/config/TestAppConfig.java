@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -21,9 +20,8 @@ import java.nio.file.Path;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource("classpath:config/db.properties")
 @ComponentScan(basePackages = {"org.blog.controllers", "org.blog.services", "org.blog.repository"})
-public class AppConfig {
+public class TestAppConfig {
 
     @Value("${db.url}")
     private String url;
@@ -66,7 +64,7 @@ public class AppConfig {
 
     @Bean
     public Path imagesStoragePath() throws IOException {
-        Path path = Path.of(imagesPath.isBlank() ? "./images" : imagesPath);
+        Path path = Path.of(imagesPath.isBlank() ? "/tmp/blog-test-images" : imagesPath);
         Files.createDirectories(path);
         return path;
     }

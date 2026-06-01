@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS comments(
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     post_id BIGINT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
         CONSTRAINT fk_comments_post
             FOREIGN KEY (post_id)
