@@ -28,7 +28,7 @@ public class PostRepository {
 
     public List<Post> getAll() {
         return jdbcTemplate.query(
-                "SELECT id, title, text, tags, likes_count, comments_count FROM posts ORDER BY id",
+                "SELECT id, title, text, tags, likes_count, comments_count, image_path, created_at FROM posts ORDER BY id",
                 this::mapPostRow
         );
     }
@@ -36,7 +36,7 @@ public class PostRepository {
     public List<Post> getAllWithPaginationAndSearch(String search, int pageNumber, int pageSize) {
         return jdbcTemplate.query(
                 """
-                        SELECT id, title, text, tags, likes_count, comments_count FROM posts
+                        SELECT id, title, text, tags, likes_count, comments_count, image_path, created_at FROM posts
                         WHERE title ILIKE ? ORDER BY id LIMIT ? OFFSET ?
                     """,
                 this::mapPostRow,
@@ -56,22 +56,22 @@ public class PostRepository {
 
     public Post getPostById(Long id) {
         return jdbcTemplate.queryForObject(
-                "SELECT id, title, text, tags, likes_count, comments_count FROM posts WHERE id = ?",
+                "SELECT id, title, text, tags, likes_count, comments_count, image_path, created_at FROM posts WHERE id = ?",
                 this::mapPostRow,
                 id
         );
     }
 
-    public Long save(String title, String text, Set<String> tags) {
+    public Post save(String title, String text, Set<String> tags) {
         return jdbcTemplate.execute((Connection con) -> {
             Array sqlTags = con.createArrayOf("text", tags.toArray(new String[0]));
-            var ps = con.prepareStatement("INSERT INTO posts (title, text, tags) VALUES (?, ?, ?) RETURNING id");
+            var ps = con.prepareStatement("INSERT INTO posts (title, text, tags) VALUES (?, ?, ?) RETURNING *");
             ps.setString(1, title);
             ps.setString(2, text);
             ps.setArray(3, sqlTags);
             ResultSet rs = ps.executeQuery();
             rs.next();
-            return rs.getLong(1);
+            return mapPostRow(rs, 0);
         });
     }
 
@@ -104,6 +104,22 @@ public class PostRepository {
         );
     }
 
+    public Integer incCountComment(Long postId) {
+        return jdbcTemplate.queryForObject(
+                "UPDATE posts SET comments_count = comments_count + 1 WHERE id = ? RETURNING comments_count",
+                Integer.class,
+                postId
+        );
+    }
+
+    public Integer decCountComment(Long postId) {
+        return jdbcTemplate.queryForObject(
+                "UPDATE posts SET comments_count = comments_count - 1 WHERE id = ? RETURNING comments_count",
+                Integer.class,
+                postId
+        );
+    }
+
     public int updateImage(Long id, String imagePath) {
         return jdbcTemplate.update("UPDATE posts SET image_path = ? WHERE id = ?", imagePath, id);
     }
@@ -128,7 +144,7 @@ public class PostRepository {
         post.setLikesCount(rs.getInt("likes_count"));
         post.setCommentsCount(rs.getInt("comments_count"));
         post.setImagePath(rs.getString("image_path"));
-        post.setCreateAt(rs.getTimestamp("create_at"));
+        post.setCreatedAt(rs.getTimestamp("created_at"));
 
         return post;
     }
