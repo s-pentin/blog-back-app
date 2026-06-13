@@ -1,6 +1,6 @@
 package org.blog.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.blog.models.Comment;
 import org.blog.models.request.CommentRequest;
 import org.blog.services.CommentService;
