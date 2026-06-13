@@ -1,6 +1,5 @@
 package org.blog.repository;
 
-import org.blog.models.Comment;
 import org.blog.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -25,16 +25,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    /*
-      5. CommentController — все эндпоинты комментариев
-
-  - GET    /api/posts/{postId}/comments — список комментариев поста, возвращает List<Comment> (JSON)
-  - GET    /api/posts/{postId}/comments/{commentId} — один комментарий, возвращает Comment (JSON)
-  - POST   /api/posts/{postId}/comments — создать комментарий, принимает JSON {text, postId}, возвращает Comment
-  - PUT    /api/posts/{postId}/comments/{commentId} — редактировать комментарий, принимает JSON {id, text, postId}, возвращает Comment
-  - DELETE /api/posts/{postId}/comments/{commentId} — удалить комментарий, вернуть 200 Ok
-*/
-
     @GetMapping("/api/posts/{postId}/comments")
     public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getAllByPostId(postId));
