@@ -1,53 +1,43 @@
 package org.blog.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.blog.config.BaseIntegrationTest;
-import org.blog.config.TestAppConfig;
-import org.blog.config.TestWebConfig;
 import org.blog.models.request.CommentRequest;
 import org.blog.repository.CommentRepository;
 import org.blog.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebAppConfiguration
-@ContextConfiguration(classes = {TestAppConfig.class, TestWebConfig.class})
+@SpringBootTest
+@AutoConfigureMockMvc
 class CommentControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private WebApplicationContext wac;
-
+    private MockMvc mockMvc;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    private MockMvc mockMvc;
 
     private Long postId;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         jdbcTemplate.execute("DELETE FROM comments");
         jdbcTemplate.execute("DELETE FROM posts");
         var post = postRepository.save("Test Post", "Text", java.util.Set.of());
