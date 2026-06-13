@@ -47,4 +47,4 @@ build/
 
 ### Local config ###
 images/
-src/main/resources/application-local.properties
+src/main/resources/application.properties

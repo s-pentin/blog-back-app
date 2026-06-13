@@ -1,0 +1,9 @@
+spring.application.name=back
+spring.datasource.url=jdbc:postgresql://localhost:<port>/<db_name>
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.sql.init.mode=always
+spring.sql.init.schema-locations=classpath:schema.sql
+images.storage.path=./images
+server.port=8080
