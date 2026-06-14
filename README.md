@@ -1,42 +1,26 @@
-Бэкенд приложения-блога с использованием Spring Framework
+Бэкенд приложения-блога с использованием Spring Boot Framework
 
 ## Требования
 
 - Java 21
 - PostgreSQL
-- Apache Tomcat 11
-
-## Сборка и деплой
-
-| Команда | Описание |
-|---------|----------|
-| `./gradlew war` | Собрать WAR-архив |
-| `./gradlew deploy` | Собрать WAR и скопировать в Tomcat |
-| `./gradlew undeploy` | Удалить приложение из Tomcat |
-| `./gradlew tomcatStart` | Запустить Tomcat |
-| `./gradlew tomcatStop` | Остановить Tomcat |
-| `./gradlew restart` | Полный цикл: тесты, остановить, задеплоить, запустить |
-
-## Конфигурация Tomcat
-
-Путь к Tomcat задаётся в `gradle.properties` (корень проекта):
-
-```
-tomcat.home=/путь/к/apache-tomcat-11
-```
-
-Альтернативно через переменную окружения `TOMCAT_HOME`. Если ни то, ни другое не задано — сборка завершится с ошибкой.
+- Spring Boot
+- Maven
 
 ## Настройка БД
 
 Конфигурация: `src/main/resources/config/db.properties`
 
 ```properties
-db.url=jdbc:postgresql://localhost:5432/blog_back_app
-db.username=postgres
-db.password=пароль
-db.driver=org.postgresql.Driver
+spring.application.name=back
+spring.datasource.url=jdbc:postgresql://localhost:<port>/<db_name>
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.sql.init.mode=always
+spring.sql.init.schema-locations=classpath:schema.sql
 images.storage.path=/путь/к/директории/картинок
+server.port=8080
 ```
 
 Схема БД: `src/main/resources/schema.sql`
