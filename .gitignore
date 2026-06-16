@@ -45,6 +45,7 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Local config ###
+### Local ###
 images/
 src/main/resources/application.properties
+.gradle/
