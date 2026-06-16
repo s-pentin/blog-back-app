@@ -7,6 +7,34 @@
 - Spring Boot
 - Maven
 
+## Запуск
+
+### Сборка приложения
+
+```bash
+./mvnw clean package
+```
+
+### Запуск тестов
+
+```bash
+./mvnw test
+```
+
+### Запуск приложения
+
+```bash
+./mvnw spring-boot:run
+```
+
+Или запустить собранный JAR-файл:
+
+```bash
+java -jar target/back-0.0.2-SNAPSHOT.jar
+```
+
+Приложение будет доступно по адресу `http://localhost:8080`.
+
 ## Настройка БД
 
 Конфигурация: `src/main/resources/config/db.properties`
@@ -15,7 +43,7 @@
 spring.application.name=back
 spring.datasource.url=jdbc:postgresql://localhost:<port>/<db_name>
 spring.datasource.username=postgres
-spring.datasource.password=postgres
+spring.datasource.password=your_password
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.sql.init.mode=always
 spring.sql.init.schema-locations=classpath:schema.sql
