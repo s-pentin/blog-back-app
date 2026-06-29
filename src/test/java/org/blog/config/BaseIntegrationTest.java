@@ -1,30 +1,25 @@
 package org.blog.config;
 
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public abstract class BaseIntegrationTest {
 
-    static final PostgreSQLContainer<?> postgresContainer =
-            new PostgreSQLContainer<>("postgres:16")
-                    .withDatabaseName("blogdb")
-                    .withUsername("testuser")
-                    .withPassword("testpass");
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
+            .withDatabaseName("blogdb");
 
     static {
-        postgresContainer.start();
+        postgres.start();
     }
 
     @DynamicPropertySource
-    static void registerDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("db.url", postgresContainer::getJdbcUrl);
-        registry.add("db.username", postgresContainer::getUsername);
-        registry.add("db.password", postgresContainer::getPassword);
-        registry.add("db.driver", () -> "org.postgresql.Driver");
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("images.storage.path", () -> "/tmp/blog-test-images");
     }
 }

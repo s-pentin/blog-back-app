@@ -1,20 +1,19 @@
 package org.blog.repository;
 
 import org.blog.config.BaseIntegrationTest;
-import org.blog.config.TestAppConfig;
 import org.blog.models.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ContextConfiguration(classes = {TestAppConfig.class})
+@SpringBootTest
 class PostRepositoryIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
